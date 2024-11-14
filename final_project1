@@ -10,6 +10,8 @@ import time
 snake_speed = 0.1
 direction = (1, -1)
 squares = []
+snake_spawn = (1, 10)
+snake_pos = []
 
 def movement():
     time.sleep(snake_speed)
@@ -18,21 +20,22 @@ def movement():
 def graphics():
     window = tk.Tk()
     for current_row in range(11):
-        for current_column in range(16):
+        for current_column in range(21):
             frame = tk.Frame(
                 master=window,
                 relief=tk.SUNKEN,
                 borderwidth=1
             )
             frame.grid(row=current_row, column=current_column)
-            label = tk.Label(master=frame, text=f'{current_row}\n{current_column}', width = 3, height=3, fg = 'white', bg = 'black')
+            label = tk.Label(master=frame, text=f'{current_row}\n{current_column}', width = 6, height=3, fg = 'white', bg = 'black')
             label.pack()
-
-    print(squares)
+            squares.append([current_row, current_column])
+            
     window.mainloop()
     
     
 if __name__ == '__main__':
     graphics()
+    snake_pos = snake_spawn
     movement()
     
