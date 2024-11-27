@@ -15,7 +15,8 @@ squares = {}
 
 
 def main():
-    window = main_grid() 
+    window = main_grid()
+     
     return window
 
 
@@ -36,26 +37,33 @@ def main_grid():
             frame.grid(row=current_row, column=current_label)
             label = tk.Label(master=frame, text=f'{current_row}\n{current_label}',
                               width=6, height=3, fg ='white',bg ='black') # creates each black label
+            # The reason we are using labels instead of labels is because we will be able to create
+            # a function and bind each label to the function so when you press on an arrow key
+            # A label will update with the color of the snake. 
             label.pack()
             squares[f"key{x}"] = label
 
     for current_label in squares.keys(): # Iterates through each label from the squares dictionary
-        if every_20 % 20 == 0:
-            window.after(timer, update_label, squares[current_label])  # updates label from the function (update_label)
-            timer += 300  # .3 second timer between each update (Can easily be adjusted faster/slower)
-        every_20 += 1
+        
+        window.bind('<Key>', lambda event: update_label(event, label))
+        # if every_20 % 20 == 0:
+        #     window.after(timer, update_label, squares[current_label])  # updates label from the function (update_label)
+        #     timer += 300  # .3 second timer between each update (Can easily be adjusted faster/slower)
+        # every_20 += 1
 
     return window
 
 
-def update_label(label):
-    label.config(text=f'{label}', width=6, height=3, fg ='black',bg ='red') # This is the actual updating of each label
-    return label
-
-def movement():
+def update_label(event, label):
+    if event.char == 'a':
+        label.config(text=f'{label}', width=6, height=3, fg ='black',bg ='red') # This is the actual updating of each label
+        return label
+    if event.char == 'd':
+        label.config(text=f'{label}', width=6, height=3, fg ='black',bg ='green') # This is the actual updating of each label
+        return label
     
 
-
+#def movement():
 if __name__ == '__main__':
     snake_pos = snake_spawn
     window = main()
