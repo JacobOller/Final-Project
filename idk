@@ -1,0 +1,81 @@
+
+"""
+Zach Taylor
+Jacob Ollerhead
+CS 1210
+Snake
+"""
+import tkinter as tk
+import time
+
+snake_speed = 0.1
+direction = (1, -1)
+snake_spawn = (1, 10)
+snake_pos = []
+squares = {}
+
+
+def main():
+    window = main_grid()
+     
+    return window
+
+
+def main_grid():
+    window = tk.Tk()
+    x = 0
+    timer = 1000 # for updating the label, first label updates 1 second after window initially opens.
+
+    for current_row in range(11): # Maybe the current row
+        for current_label in range(20): # Maybe the current column
+            x += 1
+            frame = tk.Frame(
+                master=window,
+                relief=tk.SUNKEN,
+                borderwidth=1
+            ) # 53
+            frame.grid(row=current_row, column=current_label)
+            label = tk.Label(master=frame, text=f'',
+                              width=6, height=3, fg ='white',bg ='black') # creates each black label
+            # The reason we are using labels instead of labels is because we will be able to create
+            # a function and bind each label to the function so when you press on an arrow key
+            # A label will update with the color of the snake. 
+            label.pack()
+            lst = [label, current_row, current_label]
+            squares[f"key{x}"] = lst
+
+        
+    window.bind('<Key>', lambda event: update_direction(event, label))
+    
+    return window
+
+def update_label(label):
+    label.config(text='', width=6, height=3, fg ='black',bg ='green') # This is the actual updating of each label
+    window.after(300, delete_square, label)
+    return label
+
+def delete_square(label):
+    label.config(text=f'', width=6, height=3, fg='black', bg='black')
+
+def update_direction(event, label):
+    every_20 = 10
+    timer = 1000 # for updating the label, first label updates 1 second after window initially opens.
+    if event.char == 'd':
+        for current_label in squares.keys(): # Iterates through each label from the squares dictionary
+            window.after(timer, update_label, squares[current_label][0])  # updates label from the function (update_label)
+            timer += 300  # .3 second timer between each update (Can easily be adjusted faster/slower)
+        return label
+    if event.char == 's':
+        for current_label in squares.keys(): # Iterates through each label from the squares dictionary
+            if every_20 % 20 == 0:
+                window.after(timer, update_label, squares[current_label][0])  # updates label from the function (update_label)
+                timer += 300  # .3 second timer between each update (Can easily be adjusted faster/slower)
+            every_20 += 1
+        return label
+   
+
+if __name__ == '__main__':
+    window = main()
+    window.mainloop()
+
+
