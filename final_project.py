@@ -20,7 +20,6 @@ squares = {}
 
 def main():
     window = main_grid()
-     
     return window
 
 
@@ -74,9 +73,10 @@ def update_direction(event, lst, window):
     print(lst)
     
     if event.char == 'd':
-            key_pressed = 'd'
-            #direction = lst[1], lst[2] + 1
-            window.after(300, iteration, lst, key_pressed)
+            #key_pressed = 'd'
+            direction = lst[1], lst[2] + 1
+            print(direction)
+            window.after(300, iteration, direction, lst, window)
     if event.char == 'a':
         direction = lst[1], lst[2] - 1
     if event.char == 'w':
@@ -88,23 +88,25 @@ def update_direction(event, lst, window):
     # need to add milisecond wait for this function
 
 
-def iteration(lst, key_pressed):
-    if key_pressed == 'd':
-        direction = lst[1], lst[2] + 1
+def iteration(direction, lst, window):
+        direction = direction[0], direction[1] + 1
         print(direction)
-        return direction
-    if key_pressed == 'a':
-        direction = lst[1], lst[2] + 1
-        print(direction)
-        return direction
-    if key_pressed == 'w':
-        direction = lst[1], lst[2] + 1
-        print(direction)
-        return direction
-    if key_pressed == 's':
-        direction = lst[1], lst[2] + 1
-        print(direction)
-        return direction
+        update_label(lst, window, direction)
+        window.after(300, iteration, direction, lst, window)
+
+    
+    # if key_pressed == 'a':
+    #     direction = lst[1], lst[2] - 1
+    #     print(direction)
+    #     return direction
+    # if key_pressed == 'w':
+    #     direction = lst[1] - 1, lst[2]
+    #     print(direction)
+    #     return direction
+    # if key_pressed == 's':
+    #     direction = lst[1] + 1, lst[2]
+    #     print(direction)
+    #     return direction
    
 
 if __name__ == '__main__':
