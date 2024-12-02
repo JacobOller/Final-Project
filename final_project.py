@@ -1,14 +1,18 @@
+
 """
 Zach Taylor
 Jacob Ollerhead
 CS 1210
 Snake
 """
+
+#need to use current_row and current_label stored in squares[] to save position of snake
+
+
 import tkinter as tk
 import time
 
 snake_speed = 0.1
-direction = (1, -1)
 snake_spawn = (1, 10)
 snake_pos = []
 squares = {}
@@ -24,7 +28,6 @@ def main_grid():
     window = tk.Tk()
     x = 0
     timer = 1000 # for updating the label, first label updates 1 second after window initially opens.
-    every_20 = 10
 
     for current_row in range(11): # Maybe the current row
         for current_label in range(20): # Maybe the current column
@@ -41,31 +44,69 @@ def main_grid():
             # a function and bind each label to the function so when you press on an arrow key
             # A label will update with the color of the snake. 
             label.pack()
-            squares[f"key{x}"] = label
-
-    for current_label in squares.keys(): # Iterates through each label from the squares dictionary
-        
-        window.bind('<Key>', lambda event: update_label(event, label))
-        # if every_20 % 20 == 0:
-        #     window.after(timer, update_label, squares[current_label])  # updates label from the function (update_label)
-        #     timer += 300  # .3 second timer between each update (Can easily be adjusted faster/slower)
-        # every_20 += 1
-
+            lst = [label, current_row, current_label]
+            squares[f"key{x}"] = lst
+            
+    starting_square = [5, 2]            
+    update_label(lst, window, starting_square)
+    
     return window
 
+def update_label(lst, window, next_square):
+    for values in squares.values():
+        if values[1] == next_square[0] and values[2] == next_square[1]:
+            label = values[0]
+            lst = values[0], values[1], values[2]
+    window.bind('<Key>', lambda event: update_direction(event, lst, window))
+            
+            
+    label.config(text='', width=6, height=3, fg='green', bg='green')
+    window.after(300, delete_square, label, lst, window, next_square)
 
-def update_label(event, label):
-    if event.char == 'a':
-        label.config(text=f'{label}', width=6, height=3, fg ='black',bg ='red') # This is the actual updating of each label
-        return label
-    if event.char == 'd':
-        label.config(text=f'{label}', width=6, height=3, fg ='black',bg ='green') # This is the actual updating of each label
-        return label
+
+    return label
+
+def delete_square(label, lst, window, next_square):
+    label.config(text=f'', width=6, height=3, fg='black', bg='black')
     
+def update_direction(event, lst, window):
+    direction = [0, 0]
+    print(lst)
+    
+    if event.char == 'd':
+            key_pressed = 'd'
+            #direction = lst[1], lst[2] + 1
+            window.after(300, iteration, lst, key_pressed)
+    if event.char == 'a':
+        direction = lst[1], lst[2] - 1
+    if event.char == 'w':
+        direction = lst[1] - 1, lst[2]
+    if event.char == 's':
+        direction = lst[1] + 1, lst[2]
+    
+    update_label(lst, window, direction)
+    # need to add milisecond wait for this function
 
-#def movement():
+
+def iteration(lst, key_pressed):
+    if key_pressed == 'd':
+        direction = lst[1], lst[2] + 1
+        print(direction)
+        return direction
+    if key_pressed == 'a':
+        direction = lst[1], lst[2] + 1
+        print(direction)
+        return direction
+    if key_pressed == 'w':
+        direction = lst[1], lst[2] + 1
+        print(direction)
+        return direction
+    if key_pressed == 's':
+        direction = lst[1], lst[2] + 1
+        print(direction)
+        return direction
+   
+
 if __name__ == '__main__':
-    snake_pos = snake_spawn
     window = main()
     window.mainloop()
-    print(type(squares))
