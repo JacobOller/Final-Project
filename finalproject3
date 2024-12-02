@@ -6,7 +6,6 @@ CS 1210
 Snake
 """
 
-#need to use current_row and current_label stored in squares[] to save position of snake
 
 
 import tkinter as tk
@@ -20,7 +19,6 @@ squares = {}
 
 def main():
     window = main_grid()
-     
     return window
 
 
@@ -53,12 +51,11 @@ def main_grid():
     return window
 
 def update_label(lst, window, next_square):
-    window.bind('<Key>', lambda event: update_direction(event, lst, window))
-    
     for values in squares.values():
         if values[1] == next_square[0] and values[2] == next_square[1]:
             label = values[0]
             lst = values[0], values[1], values[2]
+    window.bind('<Key>', lambda event: update_direction(event, lst, window))
             
             
     label.config(text='', width=6, height=3, fg='green', bg='green')
@@ -69,25 +66,37 @@ def update_label(lst, window, next_square):
 
 def delete_square(label, lst, window, next_square):
     label.config(text=f'', width=6, height=3, fg='black', bg='black')
-
+    
 def update_direction(event, lst, window):
     direction = [0, 0]
     
     if event.char == 'd':
+        key_pressed = 'd'
         direction = lst[1], lst[2] + 1
     if event.char == 'a':
+        key_pressed = 'a'
         direction = lst[1], lst[2] - 1
     if event.char == 'w':
+        key_pressed = 'w'
         direction = lst[1] - 1, lst[2]
     if event.char == 's':
+        key_pressed = 's'
         direction = lst[1] + 1, lst[2]
-    
+    window.after(300, iteration, direction, lst, window, key_pressed)
+
+
+def iteration(direction, lst, window, key):         #need to make only one block spawn at a time
+    if key == 'd':
+        direction = direction[0], direction[1] + 1
+    if key == 'a':
+        direction = direction[0], direction[1] - 1    
+    if key == 'w':
+        direction = direction[0] - 1, direction[1]
+    if key == 's':
+        direction = direction[0] + 1, lst[1]
     update_label(lst, window, direction)
-    # need to add milisecond wait for this function
-   
+    window.after(300, iteration, direction, lst, window, key)    
 
 if __name__ == '__main__':
     window = main()
     window.mainloop()
-
-
