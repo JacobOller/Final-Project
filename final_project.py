@@ -4,9 +4,8 @@ Jacob Ollerhead
 CS 1210
 Snake
 """
-
-#need to use current_row and current_column stored in squares[] to save position of snake
-
+# death off screen
+# score counter
 
 import tkinter as tk
 import time
@@ -99,7 +98,6 @@ def update_label(position):
             lst = label, x_coordinate, y_coordinate # once above if statement finds correct coordinates, it sets value of lst = label, x, y
             
             if label.cget("bg") == 'green': #snake dies because it hits itself
-                print('death')
                 window.destroy()
             elif label.cget("bg") == 'red': #add length when snake gets an apple
                 length += 1
@@ -127,7 +125,6 @@ def check_for_new_key():
 
     if current_key == 'a':
         if former_key == 'd':
-            print('hello')
             position = position[0], position[1] + 1
             update_label(position)
         else:
@@ -140,7 +137,6 @@ def check_for_new_key():
             position = position[0], position[1] - 1
             update_label(position)
         else:
-            print('former_is_d')
             position = position[0], position[1] + 1
             former_key = 'd'
             update_label(position)
@@ -173,7 +169,7 @@ def delete_label(label):
 def death_window():
     death_window = tk.Tk()
     tk.Label(master=death_window,
-             text='You died!').pack()
+             text=f'You died!\nScore of {length - 5}').pack()
     return death_window
 
 
