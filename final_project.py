@@ -18,6 +18,7 @@ current_key = None
 position = [5, 2]
 length = 5
 apples = 5
+former_key = None
 
 def starting_window():
     starting_window = tk.Tk()
@@ -26,13 +27,16 @@ def starting_window():
                           text="Welcome to Snake! Choose your difficulty below.").pack()
     tk.Button(master=starting_window,
                             text="Easy Mode",
-                            command=lambda: mode('easy')).pack()
+                            command=lambda: mode('easy'),
+                            bg='green').pack()
     tk.Button(master=starting_window,
                             text="Medium Mode",
-                            command=lambda: mode('medium')).pack()
+                            command=lambda: mode('medium'),
+                            bg='yellow').pack()
     tk.Button(master=starting_window,
                             text="Hard Mode",
-                            command=lambda: mode('hard')).pack()
+                            command=lambda: mode('hard'),
+                            bg='red').pack()
     return starting_window
 
 
@@ -61,7 +65,7 @@ def main():
                 borderwidth=1
             )
             frame.grid(row=current_row, column=current_column)
-            label = tk.Label(master=frame, text=d'',
+            label = tk.Label(master=frame, text='',
                               width=6, height=3, fg ='white',bg ='black') # creates each black label
             label.pack()
             lst = [label, current_row, current_column]
@@ -96,6 +100,7 @@ def update_label(position):
             
             if label.cget("bg") == 'green': #snake dies because it hits itself
                 print('death')
+                window.destroy()
             elif label.cget("bg") == 'red': #add length when snake gets an apple
                 length += 1
                 while True:
@@ -118,22 +123,45 @@ def on_key_press(event):
 def check_for_new_key():
     #global current_key
     global position
+    global former_key
 
     if current_key == 'a':
-        position = position[0], position[1] - 1
-        update_label(position)
+        if former_key == 'd':
+            print('hello')
+            position = position[0], position[1] + 1
+            update_label(position)
+        else:
+            position = position[0], position[1] - 1
+            former_key = 'a'
+            update_label(position)
 
     elif current_key == 'd':
-        position = position[0], position[1] + 1
-        update_label(position)
+        if former_key == 'a':
+            position = position[0], position[1] - 1
+            update_label(position)
+        else:
+            print('former_is_d')
+            position = position[0], position[1] + 1
+            former_key = 'd'
+            update_label(position)
 
     elif current_key == 'w':
-        position = position[0] - 1, position[1]
-        update_label(position)
+        if former_key == 's':
+            position = position[0] + 1, position[1]
+            update_label(position)
+        else:
+            position = position[0] - 1, position[1]
+            former_key = 'w'
+            update_label(position)
 
     elif current_key == 's':
-        position = position[0] + 1, position[1]
-        update_label(position)
+        if former_key == 'w':
+            position = position[0] - 1, position[1]
+            update_label(position)
+        else:
+            position = position[0] + 1, position[1]
+            former_key = 's'
+            update_label(position)
 
     window.after(timer, check_for_new_key) # Runs itself over and over constantly based on the difficulty that the user chose.
 
@@ -142,8 +170,17 @@ def delete_label(label):
     label.config(text='', width=6, height=3, fg='black', bg='black')
 
 
+def death_window():
+    death_window = tk.Tk()
+    tk.Label(master=death_window,
+             text='You died!').pack()
+    return death_window
+
+
 if __name__ == '__main__':
     starting_window = starting_window()
     starting_window.mainloop()
     window = main()
     window.mainloop()
+    death_window = death_window()
+    death_window.mainloop()
