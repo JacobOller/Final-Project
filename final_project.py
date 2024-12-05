@@ -17,132 +17,13 @@ position = [5, 2]
 length = 5
 apples = 1
 timer = 300
-number_of_rows = 13
-number_of_columns = 17
+number_of_rows = 12
+number_of_columns = 12
 current_key = None
 former_key = None
+death = None
 difficulty = 'medium'
-dimensions = '13x17'
-
-
-def center_window(window, width, height):
-    screen_width = window.winfo_screenwidth()
-    screen_height = window.winfo_screenheight()
-    screen_x = (screen_width // 2) - (width // 2)
-    screen_y = (screen_height // 2) - (height // 2)
-    window.geometry(f'{width}x{height}+{screen_x}+{screen_y}')
-    return
-
-'''Includes button to play and button to change settings'''
-def initial_screen():
-    global difficulty_label
-    global dimensions_label
-    global apples_label
-
-    starting_window = tk.Tk()
-    center_window(starting_window, 600, 500)
-
-    starting_window.title("Starting Window")
-    starting_window.config(bg='#1fa6a8')
-
-    tk.Label(master=starting_window, # Title
-             text='SNAKE',
-             font=('Castellar', 50, 'bold'),
-             width=10,
-             padx=10,
-             pady=10,
-             bg='blue').pack(pady=(0,10))
-    tk.Label(master=starting_window, # Current Settings
-             text='Current Settings:',
-             font=('Unispace', 22),
-             padx=10,
-             pady=10,
-             bg='#1fa6a8').pack()
-    difficulty_label = tk.Label(master=starting_window,
-             text=f'Difficulty: {difficulty}',
-             font=('Unispace', 14),
-             bg='#1fa6a8')
-    difficulty_label.pack()
-    dimensions_label = tk.Label(master=starting_window,
-            text=f'Grid Size: {dimensions}',
-            font=('Unispace', 14),
-            bg='#1fa6a8')
-    dimensions_label.pack()
-    apples_label = tk.Label(master=starting_window,
-            text=f'Apples: {apples}',
-            font=('Unispace', 14),
-            bg='#1fa6a8')
-    apples_label.pack()
-    tk.Button(master=starting_window,
-              text='Change Settings',
-              font=('Unispace', 17),
-              command=settings).pack(pady=(50,0))
-    tk.Button(master=starting_window,
-              text='Play',
-              font=('Unispace', 30),
-              bg='blue',
-              command=initial_play).pack(pady=(15,0))
-    return starting_window
-
-
-'''Includes many buttons that are used to change individual settings;
- includes multiple smaller functions'''
-def settings():
-    settings_window = tk.Tk()
-
-    tk.Button(master=settings_window,
-                            text="Easy Mode",
-                            command=lambda: mode('easy', difficulty_label),
-                            #command=(mode,'easy'),
-                            bg='green').pack()
-    tk.Button(master=settings_window,
-                            text="Medium Mode",
-                            command=lambda: mode('medium', difficulty_label),
-                            #command=(mode,'medium'),
-                            bg='yellow').pack()
-    tk.Button(master=settings_window,
-                            text="Hard Mode",
-                            command=lambda: mode('hard', difficulty_label),
-                            #command=(mode,'hard'),
-                            bg='red').pack()
-    tk.Button(master=settings_window,
-              text='10x10 Grid',
-              command=lambda: grid_sizer('10x10', dimensions_label)).pack()
-    tk.Button(master=settings_window,
-              text='10x12 Grid',
-              command=lambda: grid_sizer('10x12', dimensions_label)).pack()
-    tk.Button(master=settings_window,
-              text='12x12 Grid',
-              command=lambda: grid_sizer('12x12', dimensions_label)).pack()
-    tk.Button(master=settings_window,
-              text='10x14 Grid',
-              command=lambda: grid_sizer('10x14', dimensions_label)).pack()
-    tk.Button(master=settings_window,
-              text='13x16 Grid',
-              command=lambda: grid_sizer('13x16', dimensions_label)).pack()
-    tk.Button(master=settings_window,
-              text='12x18 Grid',
-              command=lambda: grid_sizer('12x18', dimensions_label)).pack()
-    tk.Button(master=settings_window,
-              text='1 Apple',
-              command=lambda: apple_amount('1 apple', apples_label)).pack()
-    tk.Button(master=settings_window,
-              text='2 Apples',
-              command=lambda: apple_amount('2 apple', apples_label)).pack()
-    tk.Button(master=settings_window,
-              text='3 Apples',
-              command=lambda: apple_amount('3 apple', apples_label)).pack()
-    tk.Button(master=settings_window,
-              text='4 Apples',
-              command=lambda: apple_amount('4 apple', apples_label)).pack()
-    tk.Button(master=settings_window,
-              text='5 Apples',
-              command=lambda: apple_amount('5 apple', apples_label)).pack()
-    tk.Button(master=settings_window,
-              text='Exit Settings',
-              command=lambda: exit_settings(settings_window)).pack()
-
-    return settings_window
+dimensions = '12x12'
 
 
 '''Part of Settings'''
@@ -152,11 +33,13 @@ def mode(selected_diff, label):
     if difficulty == None:
         return 'medium'
     if selected_diff == 'easy':
-        timer = 400 # number of miliseconds between each snake movement
+        timer = 270 # number of miliseconds between each snake movement
     if selected_diff == 'medium':
-        timer = 300 # number of miliseconds between each snake movement
+        timer = 190 # number of miliseconds between each snake movement
     if selected_diff == 'hard':
-        timer = 200 # number of miliseconds between each snake movement
+        timer = 155 # number of miliseconds between each snake movement
+    if selected_diff == 'very hard':
+        timer = 130 # number of miliseconds between each snake movement
     difficulty = selected_diff
     difficulty_label_update(label)
 
@@ -202,9 +85,130 @@ def apples_label_update(label):
 def exit_settings(settings_window):
     settings_window.destroy()
 
+
 '''Function that exits the starting window; this exit initializes the logic for the game itself.'''
 def initial_play():
     starting_window.destroy()
+
+
+def center_window(window, width, height, below_center_num):
+    screen_width = window.winfo_screenwidth()
+    screen_height = window.winfo_screenheight()
+    screen_x = (screen_width // 2) - (width // 2)
+    screen_y = (screen_height // 2) - (height // 2) + below_center_num
+    window.geometry(f'{width}x{height}+{screen_x}+{screen_y}')
+    return
+
+'''Includes button to play and button to change settings'''
+def initial_screen():
+    global difficulty_label
+    global dimensions_label
+    global apples_label
+
+    starting_window = tk.Tk()
+    center_window(starting_window, 600, 500, 0)
+
+    starting_window.title("Starting Window")
+    starting_window.config(bg='#1fa6a8')
+
+    tk.Label(master=starting_window, # Title
+             text='SNAKE',
+             font=('Castellar', 50, 'bold'),
+             width=10,
+             padx=10,
+             pady=10,
+             bg='blue').pack(pady=(10,10))
+    tk.Label(master=starting_window, # Current Settings
+             text='Current Settings:',
+             font=('Unispace', 22),
+             padx=10,
+             pady=10,
+             bg='#1fa6a8').pack()
+    difficulty_label = tk.Label(master=starting_window, # Difficulty Label
+             text=f'Difficulty: {difficulty}',
+             font=('Unispace', 14),
+             bg='#1fa6a8')
+    difficulty_label.pack()
+    dimensions_label = tk.Label(master=starting_window, # Dimensions Label
+            text=f'Grid Size: {dimensions}',
+            font=('Unispace', 14),
+            bg='#1fa6a8')
+    dimensions_label.pack()
+    apples_label = tk.Label(master=starting_window, # Amount of apples label
+            text=f'Apples: {apples}',
+            font=('Unispace', 14),
+            bg='#1fa6a8')
+    apples_label.pack()
+    tk.Button(master=starting_window, # Button to access Settings
+              text='Change Settings',
+              font=('Unispace', 17),
+              command=settings).pack(pady=(25,0))
+    tk.Button(master=starting_window, # Button to play game
+              text='Play',
+              font=('Unispace', 30),
+              bg='blue',
+              command=initial_play).pack(pady=(15,0))
+    return starting_window
+
+
+'''Includes many buttons that are used to change individual settings;
+ includes multiple smaller functions'''
+def settings():
+    settings_window = tk.Tk()
+    settings_window.config(bg='black')
+    center_window(settings_window, 200, 320, 75)
+    settings_window.overrideredirect(True)
+    tk.Button(master=settings_window,
+                            text="Easy",
+                            font=('Unispace', 12),
+                            width=14,
+                            command=lambda: mode('easy', difficulty_label),
+                            bg='green').pack(pady=(10,0))
+    tk.Button(master=settings_window,
+                            text="Medium",
+                            font=('Unispace', 12),
+                            width=14,
+                            command=lambda: mode('medium', difficulty_label),
+                            bg='yellow').pack()
+    tk.Button(master=settings_window,
+                            text="Hard",
+                            font=('Unispace', 12),
+                            width=14,
+                            command=lambda: mode('hard', difficulty_label),
+                            bg='red').pack()
+    tk.Button(master=settings_window,
+                            text="Very Hard",
+                            font=('Unispace', 12),
+                            width=14,
+                            command=lambda: mode('very hard', difficulty_label),
+                            bg='#87131c').pack()
+    tk.Button(master=settings_window,
+              text='1 Apple',
+              font=('Unispace', 12),
+              width=14,
+              bg='#35b8ba',
+              command=lambda: apple_amount('1 apple', apples_label)).pack()
+    tk.Button(master=settings_window,
+              text='2 Apples',
+              font=('Unispace', 12),
+              width=14,
+              bg='#35b8ba',
+              command=lambda: apple_amount('2 apple', apples_label)).pack()
+    tk.Button(master=settings_window,
+              text='3 Apples',
+              font=('Unispace', 12),
+              width=14,
+              bg='#35b8ba',
+              command=lambda: apple_amount('3 apple', apples_label)).pack()
+    tk.Button(master=settings_window,
+              text='EXIT',
+              font=('Unispace', 12, 'bold'),
+              width=14,
+              bg='#bd34bd',
+              command=lambda: exit_settings(settings_window)).pack(pady=(10,0))
+
+    return settings_window
+
 
 '''Main Function; First Creates Labels in a grid style (grid is based off of user input from settings), then every 300ms checks for a new keyboard
 input with the check_for_new_key function; Calls update_label function to update each label acording
@@ -216,7 +220,9 @@ def main():
     x = 0
 
     window = tk.Tk()
-    center_window(window, number_of_columns*50,number_of_rows*53)
+    if death == True:
+        return
+    center_window(window, number_of_columns*50,number_of_rows*53, 0)
     temp_window()
 
     for current_row in range(number_of_rows): # Maybe the current row
@@ -234,8 +240,9 @@ def main():
 
             lst = [label, current_row, current_column]
             squares[f"key{x}"] = lst
-    window.after(300, check_for_new_key)
-    update_label(lst)
+    if not death:
+        window.after(300, check_for_new_key)
+        update_label(lst)
    
     for apple in range(apples): #spawns in apples randomly based off of user input
         while True:
@@ -256,6 +263,7 @@ def update_label(position):
     global window
     global timer
     global length
+    global death
 
     window.bind('<Key>', on_key_press)
     for values in squares.values():
@@ -303,7 +311,6 @@ def check_for_new_key():
     if current_key == 'a':
         if former_key == 'd':
             position = position[0], position[1] + 1
-            #check_coordinates(coordinates_lst)
             update_label(position)
         else:
             position = position[0], position[1] - 1
@@ -336,6 +343,20 @@ def check_for_new_key():
             position = position[0] + 1, position[1]
             former_key = 's'
             update_label(position)
+    else: # If the user presses any key that isn't WASD, it will just continue to use the former key
+        if former_key == 'd':
+            position = position[0], position[1] + 1
+            update_label(position)
+        if former_key == 'a':
+            position = position[0], position[1] - 1
+            update_label(position)
+        if former_key == 's':
+            position = position[0] + 1, position[1]
+            update_label(position)
+        if former_key == 'w':
+            position = position[0] - 1, position[1]
+            update_label(position)
+    print('tested')
 
     window.after(timer, check_for_new_key) # Runs itself over and over constantly based on the difficulty that the user chose.
 
@@ -343,23 +364,20 @@ def check_for_new_key():
 '''Function that ensures that the length of the snake is correct by constantly changing the color of labels
 from the color of the snake to the background based off of the snake's movement'''
 def delete_label(label):
-    #label.config(text='', width=6, height=3, fg='black', bg='black')
-    # if label.cget("bg") == '#47e322':
     label.config(text='', width=6, height=3, fg='#47e322', bg='#47e322')
-    # else:
-    #     label.config(text='', width=6, height=3, fg='#1e8106', bg='#1e8106')
 
 
 def temp_window():
     temp_win = tk.Tk()
     temp_win.config(bg='#d058f0')
-    center_window(temp_win, 100, 50)
-    temp_win.focus()
-    temp_win.attributes('-topmost', True)
-    tk.Label(master=temp_win,
-            text='Press a key to start\n(WASD)',
+    center_window(temp_win, 200, 100, 0) # Centers the window
+    temp_win.overrideredirect(True) # Makes it so that the window doesn't have the bar at the top
+    temp_win.focus() # Makes it so that the window is brought infront of the snake grid
+    temp_win.attributes('-topmost', True) # Makes it so that the window is brought infront of the snake grid
+    tk.Label(master=temp_win, #
+            text='Click the grid, then press\n a key to start (WASD)',
             bg='#d058f0',
-            font=('Unispace', 6),).pack(expand=True)
+            font=('Unispace', 8),).pack(expand=True)
     destroy_temp(temp_win)
     
 
@@ -374,9 +392,9 @@ def destroy_temp(temp_win):
 def death_window():
     death_window = tk.Tk()
     death_window.config(bg='#d058f0')
-    center_window(death_window, 100, 50)
+    center_window(death_window, 100, 50, 0)
     tk.Label(master=death_window,
-            text=f'You died!\nScore of {length - 5}',
+            text=f'You died!\nYour Score: {length - 5}',
             bg='#d058f0',
             font=('Unispace', 8),).pack(expand=True)
     return death_window
