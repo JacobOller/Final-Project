@@ -82,7 +82,7 @@ def apples_label_update(label):
 
 
 '''Function that exits the settings'''
-def exit_settings(settings_window):
+def exit_settings(settings_window): 
     settings_window.destroy()
 
 
@@ -242,7 +242,8 @@ def main():
             squares[f"key{x}"] = lst
     if not death:
         window.after(300, check_for_new_key)
-        update_label(lst)
+        pos = lst[1], lst[2]
+        update_label(pos)
    
     for apple in range(apples): #spawns in apples randomly based off of user input
         while True:
@@ -264,6 +265,9 @@ def update_label(position):
     global timer
     global length
     global death
+    
+    print(position[0], position[1])
+    
 
     window.bind('<Key>', on_key_press)
     for values in squares.values():
@@ -276,7 +280,6 @@ def update_label(position):
             lst = label, x_coordinate, y_coordinate # once above if statement finds correct coordinates, it sets value of lst = label, x, y
             
             if label.cget("bg") == 'blue': #snake dies because it hits itself
-                print('death')
                 window.destroy()
             elif label.cget("bg") == 'red': #add length when snake gets an apple
                 length += 1
@@ -291,6 +294,10 @@ def update_label(position):
                 label.config(text='', width=6, height=3, fg='blue', bg='blue')
                 window.after(timer * length, delete_label, label) # we can use the after and a timer to delay the deletion of a square making the snake longer
 
+    if position[0] < 0 or position[0] == number_of_rows:
+        window.destroy()
+    elif position[1] < 0 or position[1] == number_of_columns:
+        window.destroy()
 
 '''Function that is called from update_label everytime a new key is pressed and sets current_key = the key'''
 def on_key_press(event):
@@ -356,7 +363,6 @@ def check_for_new_key():
         if former_key == 'w':
             position = position[0] - 1, position[1]
             update_label(position)
-    print('tested')
 
     window.after(timer, check_for_new_key) # Runs itself over and over constantly based on the difficulty that the user chose.
 
